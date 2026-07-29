@@ -90,6 +90,76 @@ export async function getBountiesCollection() {
 }
 
 /**
+ * Get advertisements collection
+ */
+export async function getAdvertisementsCollection() {
+  return getCollection("advertisements")
+}
+
+/**
+ * Get novel fraud reports collection
+ */
+export async function getNovelFraudReportsCollection() {
+  return getCollection("novelFraudReports")
+}
+
+/**
+ * Get reputation activities collection
+ */
+export async function getReputationActivitiesCollection() {
+  return getCollection("reputationActivities")
+}
+
+/**
+ * Get user settings collection
+ */
+export async function getUserSettingsCollection() {
+  return getCollection("userSettings")
+}
+
+/**
+ * Get user activity log collection
+ */
+export async function getUserActivityLogCollection() {
+  return getCollection("userActivityLog")
+}
+
+/**
+ * Get referrals collection
+ */
+export async function getReferralsCollection() {
+  return getCollection("referrals")
+}
+
+/**
+ * Get referral clicks collection
+ */
+export async function getReferralClicksCollection() {
+  return getCollection("referralClicks")
+}
+
+/**
+ * Get referral commissions collection
+ */
+export async function getReferralCommissionsCollection() {
+  return getCollection("referralCommissions")
+}
+
+/**
+ * Get revenue config collection
+ */
+export async function getRevenueConfigCollection() {
+  return getCollection("revenueConfig")
+}
+
+/**
+ * Get admin treasury collection
+ */
+export async function getAdminTreasuryCollection() {
+  return getCollection("adminTreasury")
+}
+
+/**
  * Find user by Pi UID
  */
 export async function findUserByPiUid(piUid: string) {

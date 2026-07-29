@@ -6,6 +6,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Enable instrumentation.ts to run initializeDatabaseCollections on server start
+  experimental: {
+    instrumentationHook: true,
+  },
   // Inject NEXT_PUBLIC_APP_URL automatically from Vercel's built-in env vars.
   // Priority: explicit override → production URL → preview branch URL → deploy URL
   // This ensures the domain is always dynamic — never hardcoded.

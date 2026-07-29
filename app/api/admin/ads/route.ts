@@ -1,51 +1,54 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-// In-memory store - replace with MongoDB collection in production
-const adsStore = new Map()
+import { getDatabase } from "@/lib/mongodb"
+import { verifyAdminAccess, unauthorizedResponse } from "@/lib/admin-auth"
 
 export async function GET(request: NextRequest) {
+  const authResult = verifyAdminAccess(request.headers)
+  if (!authResult.isAuthorized) {
+    return unauthorizedResponse()
+  }
+
   try {
-    const authHeader = request.headers.get("Authorization")
-
-    if (!authHeader) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const ads = Array.from(adsStore.values())
+    const db = await getDatabase()
+    const adsCollection = db.collection("advertisements")
+    const ads = await adsCollection.find({}).sort({ createdAt: -1 }).toArray()
 
     return NextResponse.json({ ads })
   } catch (error) {
-    console.error("Error fetching ads:", error)
+    console.error("[API] Error fetching ads:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
+  const authResult = verifyAdminAccess(request.headers)
+  if (!authResult.isAuthorized) {
+    return unauthorizedResponse()
+  }
+
   try {
-    const authHeader = request.headers.get("Authorization")
-
-    if (!authHeader) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
+    const db = await getDatabase()
+    const adsCollection = db.collection("advertisements")
     const body = await request.json()
-    const adId = `ad_${Date.now()}`
 
     const newAd = {
-      adId,
       ...body,
       impressions: 0,
       clicks: 0,
       revenue: 0,
+      isActive: body.isActive ?? true,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
-    adsStore.set(adId, newAd)
+    const result = await adsCollection.insertOne(newAd)
 
-    return NextResponse.json({ success: true, ad: newAd })
+    return NextResponse.json({
+      success: true,
+      ad: { _id: result.insertedId, ...newAd },
+    })
   } catch (error) {
-    console.error("Error creating ad:", error)
+    console.error("[API] Error creating ad:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

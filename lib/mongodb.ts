@@ -161,6 +161,97 @@ export async function initializeDatabaseCollections(): Promise<void> {
     await fraudReportsCollection.createIndex({ createdAt: -1 })
     console.log("[MongoDB] ✓ Fraud reports collection initialized")
 
+    // Novel fraud reports (bounty submissions)
+    const novelFraudReportsCollection = db.collection("novelFraudReports")
+    await novelFraudReportsCollection.createIndex({ reporterId: 1 })
+    await novelFraudReportsCollection.createIndex({ status: 1 })
+    await novelFraudReportsCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Novel fraud reports collection initialized")
+
+    // Wallet verifications
+    const walletVerificationsCollection = db.collection("walletVerifications")
+    await walletVerificationsCollection.createIndex({ userId: 1 }, { unique: true })
+    await walletVerificationsCollection.createIndex({ walletAddress: 1 })
+    await walletVerificationsCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Wallet verifications collection initialized")
+
+    // Withdrawals
+    const withdrawalsCollection = db.collection("withdrawals")
+    await withdrawalsCollection.createIndex({ userId: 1 })
+    await withdrawalsCollection.createIndex({ status: 1 })
+    await withdrawalsCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Withdrawals collection initialized")
+
+    // Admin revenue (individual commission transactions)
+    const adminRevenueCollection = db.collection("adminRevenue")
+    await adminRevenueCollection.createIndex({ transactionType: 1 })
+    await adminRevenueCollection.createIndex({ sourceUserId: 1 })
+    await adminRevenueCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Admin revenue collection initialized")
+
+    // Admin treasury (single aggregate document)
+    const adminTreasuryCollection = db.collection("adminTreasury")
+    await adminTreasuryCollection.createIndex({ lastUpdated: -1 })
+    console.log("[MongoDB] ✓ Admin treasury collection initialized")
+
+    // Revenue config (single config document)
+    const revenueConfigCollection = db.collection("revenueConfig")
+    await revenueConfigCollection.createIndex({ updatedAt: -1 })
+    console.log("[MongoDB] ✓ Revenue config collection initialized")
+
+    // Bounties (ads managed by admin)
+    const bountiesCollection = db.collection("bounties")
+    await bountiesCollection.createIndex({ isActive: 1 })
+    await bountiesCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Bounties collection initialized")
+
+    // Advertisements
+    const advertisementsCollection = db.collection("advertisements")
+    await advertisementsCollection.createIndex({ isActive: 1 })
+    await advertisementsCollection.createIndex({ priority: -1 })
+    await advertisementsCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Advertisements collection initialized")
+
+    // Reputation activities log
+    const reputationActivitiesCollection = db.collection("reputationActivities")
+    await reputationActivitiesCollection.createIndex({ userId: 1, createdAt: -1 })
+    await reputationActivitiesCollection.createIndex({ activityType: 1 })
+    await reputationActivitiesCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Reputation activities collection initialized")
+
+    // User settings
+    const userSettingsCollection = db.collection("userSettings")
+    await userSettingsCollection.createIndex({ userId: 1 }, { unique: true })
+    console.log("[MongoDB] ✓ User settings collection initialized")
+
+    // User activity log
+    const userActivityLogCollection = db.collection("userActivityLog")
+    await userActivityLogCollection.createIndex({ userId: 1, createdAt: -1 })
+    await userActivityLogCollection.createIndex({ createdAt: -1 })
+    // Auto-expire activity logs after 90 days
+    await userActivityLogCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 7776000 })
+    console.log("[MongoDB] ✓ User activity log collection initialized")
+
+    // Referrals
+    const referralsCollection = db.collection("referrals")
+    await referralsCollection.createIndex({ referrerId: 1 })
+    await referralsCollection.createIndex({ referredUserId: 1 }, { unique: true })
+    await referralsCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Referrals collection initialized")
+
+    // Referral clicks
+    const referralClicksCollection = db.collection("referralClicks")
+    await referralClicksCollection.createIndex({ referrerId: 1, createdAt: -1 })
+    await referralClicksCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Referral clicks collection initialized")
+
+    // Referral commissions
+    const referralCommissionsCollection = db.collection("referralCommissions")
+    await referralCommissionsCollection.createIndex({ referrerId: 1 })
+    await referralCommissionsCollection.createIndex({ sourceUserId: 1 })
+    await referralCommissionsCollection.createIndex({ createdAt: -1 })
+    console.log("[MongoDB] ✓ Referral commissions collection initialized")
+
     console.log("[MongoDB] ✓ All collections initialized successfully")
   } catch (error) {
     console.error("[MongoDB] Collection initialization failed:", error)
