@@ -95,6 +95,13 @@ export async function POST(request: NextRequest) {
       { upsert: true }
     )
 
+    if (!user) {
+      return NextResponse.json(
+        { error: "Failed to create/update user" },
+        { status: 500 }
+      )
+    }
+
     console.log(`[API] User initialized: ${piUid}`)
 
     return NextResponse.json(

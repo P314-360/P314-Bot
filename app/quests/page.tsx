@@ -24,7 +24,7 @@ export default function QuestsPage() {
   const userId = sessionData?.userId ?? "guest"
   const piAccessToken = sessionData?.piAccessToken || null
 
-  const { gameProgress, mintNFT, canMintNFT } = useQuestSystem(userId)
+  const { gameProgress, mintNFT, canMintNFT } = useQuestSystem(userId || "")
 
   const handleMintNFT = async () => {
     await mintNFT(piAccessToken)

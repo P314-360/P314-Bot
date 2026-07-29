@@ -237,17 +237,17 @@ export default function DashboardPage() {
             <UserProfile user={user} language={language} chatHistory={history} piAccessToken={piAccessToken} />
           )}
           {activeTab === "referral" && <ReferralPanel userId={userId} username={username} />}
-          {activeTab === "guide" && <BotGuidePanel language={language} />}
-          {activeTab === "roadmap" && <RoadmapPanel language={language} />}
-          {activeTab === "nft" && <NFTInfoPanel language={language} />}
-          {activeTab === "fraud-wallets" && <FraudWalletsPanel language={language} />}
-          {activeTab === "admin" && isAdmin(username) && <AdminDashboard piUsername={username} language={language} />}
+          {activeTab === "guide" && <BotGuidePanel language={(language === "en" || language === "ar" ? language : "en") as "en" | "ar"} />}
+          {activeTab === "roadmap" && <RoadmapPanel language={(language === "en" || language === "ar" ? language : "en") as "en" | "ar"} />}
+          {activeTab === "nft" && <NFTInfoPanel language={(language === "en" || language === "ar" ? language : "en") as "en" | "ar"} />}
+          {activeTab === "fraud-wallets" && <FraudWalletsPanel language={(language === "en" || language === "ar" ? language : "en") as "en" | "ar"} />}
+          {activeTab === "admin" && isAdmin(username) && <AdminDashboard piUsername={username} language={(language === "en" || language === "ar" ? language : "en") as "en" | "ar"} />}
           {activeTab === "history" && (
             <ChatHistoryPanel
               history={history}
               onLoadSession={handleLoadSession}
               onClearHistory={clearHistory}
-              language={language}
+              language={(language === "en" || language === "ar" ? language : "en") as "en" | "ar"}
             />
           )}
           {activeTab === "channels" && (
