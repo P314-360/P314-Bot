@@ -20,4 +20,9 @@ export const COLORS = {
 
   // UPDATE: Set to the primary color for buttons, links, etc. (hex format)
   PRIMARY: "#5f366b",
+
+  // Status colors
+  SUCCESS: "#16a34a",
+  ERROR: "#dc2626",
+  WARNING: "#d97706",
 } as const;

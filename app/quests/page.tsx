@@ -21,7 +21,7 @@ export default function QuestsPage() {
     startAuthentication,
   } = usePiSession()
 
-  const userId = sessionData?.userId || "guest"
+  const userId = sessionData?.userId ?? "guest"
   const piAccessToken = sessionData?.piAccessToken || null
 
   const { gameProgress, mintNFT, canMintNFT } = useQuestSystem(userId)

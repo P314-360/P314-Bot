@@ -55,8 +55,9 @@ export function useWallet(userId: string | null) {
     try {
       // SECURITY: Use Pi SDK authenticate() - returns ONLY public wallet address
       // This method NEVER requests or handles the user's 24-word passphrase
+      // Pi SDK v2 authenticate() only accepts scopes array — no callback argument
       const scopes = ["username", "payments"]
-      const authResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound)
+      const authResult = await window.Pi.authenticate(scopes)
 
       // Extract ONLY the public wallet address from authentication
       const publicWalletAddress = authResult.user.uid // Pi user identifier (public)

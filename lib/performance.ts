@@ -127,7 +127,7 @@ export function memoize<Args extends unknown[], Return>(
     const result = fn(...args)
 
     if (cache.size >= maxSize) {
-      const firstKey = cache.keys().next().value
+      const firstKey = cache.keys().next().value as string
       cache.delete(firstKey)
     }
 

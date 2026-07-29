@@ -12,7 +12,7 @@ export function SystemDocumentationViewer() {
   const { language } = useLanguage()
   const [activeSection, setActiveSection] = useState("overview")
 
-  const doc = SYSTEM_DOCUMENTATION[language] || SYSTEM_DOCUMENTATION.en
+  const doc = (SYSTEM_DOCUMENTATION as Record<string, typeof SYSTEM_DOCUMENTATION["en"]>)[language] ?? SYSTEM_DOCUMENTATION.en
 
   const exportDocumentation = () => {
     const content = JSON.stringify(doc, null, 2)
@@ -87,11 +87,11 @@ export function SystemDocumentationViewer() {
               <CardTitle>{doc.roadmap.title}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {doc.roadmap.phases.map((phase, index) => (
+              {doc.roadmap.phases.map((phase: { phase: string; status: string; items: string[] }, index: number) => (
                 <div key={index} className="border-l-4 border-pi-purple pl-4">
                   <h3 className="text-lg font-bold mb-3">{phase.phase}</h3>
                   <ul className="space-y-2">
-                    {phase.items.map((item, itemIndex) => (
+                    {phase.items.map((item: string, itemIndex: number) => (
                       <li key={itemIndex} className="text-sm">
                         {item}
                       </li>
