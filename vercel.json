@@ -9,50 +9,6 @@
       "maxDuration": 60
     }
   },
-  "env": {
-    "MONGODB_URI": {
-      "description": "MongoDB connection string - staging for Preview, mainnet for Production"
-    },
-    "MONGODB_DB_NAME": {
-      "description": "MongoDB database name"
-    },
-    "PI_APP_ID": {
-      "description": "Pi Network App ID - testnet for Preview, mainnet for Production"
-    },
-    "PI_API_KEY": {
-      "description": "Pi Network API Key - testnet for Preview, mainnet for Production"
-    },
-    "NEXT_PUBLIC_PI_NETWORK_URL": {
-      "description": "Pi Network API endpoint"
-    },
-    "NEXT_PUBLIC_PI_NETWORK": {
-      "description": "Pi Network environment - testnet for Preview, mainnet for Production"
-    },
-    "ENCRYPTION_KEY": {
-      "description": "AES-256 encryption key (32 hex chars)"
-    },
-    "ENCRYPTION_IV": {
-      "description": "AES-256 IV (16 hex chars)"
-    },
-    "SESSION_SECRET": {
-      "description": "Session secret for JWT signing"
-    },
-    "NEXT_PUBLIC_API_URL": {
-      "description": "Base URL for API calls"
-    },
-    "NEXT_PUBLIC_ENVIRONMENT": {
-      "description": "Environment: staging for Preview, production for Production"
-    },
-    "RATE_LIMIT_MAX_REQUESTS": {
-      "description": "Max requests per rate limit window"
-    },
-    "RATE_LIMIT_WINDOW_MS": {
-      "description": "Rate limit window in milliseconds"
-    },
-    "LOG_LEVEL": {
-      "description": "Logging level: debug for Preview, info for Production"
-    }
-  },
   "headers": [
     {
       "source": "/.well-known/pi-association.json",
