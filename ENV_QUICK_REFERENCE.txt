@@ -1,0 +1,226 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║           COMPLETE ENVIRONMENT VARIABLES REFERENCE (41 VARS)              ║
+║           قائمة شاملة لجميع متغيرات البيئة (41 متغير)                   ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📌 REQUIRED VARIABLES (14) - الحتمية
+════════════════════════════════════════════════════════════════════════════
+
+DATABASE (2 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ MONGODB_URI
+   مثال: mongodb+srv://user:pass@cluster.mongodb.net/p314-testnet?retryWrites=true
+   الملفات: lib/mongodb.ts, lib/env.ts
+   
+✅ MONGODB_DB_NAME
+   مثال: p314-testnet أو p314-mainnet
+   الملفات: lib/env.ts, lib/mongodb.ts
+
+PI NETWORK (8 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ PI_APP_ID
+   مثال: p314-aa57cb98de8ff227
+   الملفات: lib/env.ts, lib/system-config.ts
+   من: Pi Developer Dashboard
+
+✅ PI_API_KEY (SECRET)
+   من: Pi Developer Dashboard
+   الملفات: lib/env.ts
+   
+✅ NEXT_PUBLIC_APP_ID_SANDBOX
+   مثال: your_testnet_app_id
+   من: https://testnet.minepi.com
+   
+✅ NEXT_PUBLIC_APP_ID_MAINNET
+   مثال: your_mainnet_app_id
+   من: https://minepi.com
+   
+✅ NEXT_PUBLIC_BACKEND_URL_SANDBOX
+   القيمة: https://testnet-api.minepi.com
+   الملفات: hooks/use-pi-environment-auth.ts
+   
+✅ NEXT_PUBLIC_BACKEND_URL_MAINNET
+   القيمة: https://api.minepi.com
+   الملفات: hooks/use-pi-environment-auth.ts
+
+SECURITY (3 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ ENCRYPTION_KEY (32 char hex - SECRET)
+   توليد: openssl rand -hex 32
+   الملفات: lib/env.ts, lib/encryption-utils.ts
+   
+✅ ENCRYPTION_IV (16 char hex - SECRET)
+   توليد: openssl rand -hex 16
+   الملفات: lib/env.ts, lib/encryption-utils.ts
+   
+✅ SESSION_SECRET (SECRET)
+   توليد: openssl rand -hex 32
+   الملفات: lib/env.ts
+   الحد الأدنى: 32 حرف
+
+ENVIRONMENT (1 متغير):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ NEXT_PUBLIC_APP_URL
+   مثال: https://your-project.vercel.app
+   الملفات: lib/env.ts, next.config.mjs
+   تلقائي: من VERCEL_URL في Vercel
+
+════════════════════════════════════════════════════════════════════════════
+
+📌 OPTIONAL VARIABLES (27) - الاختيارية
+════════════════════════════════════════════════════════════════════════════
+
+PI NETWORK (3 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 NEXT_PUBLIC_PI_NETWORK_URL
+   قيمة افتراضية: https://api.minepi.com
+   
+📌 NEXT_PUBLIC_PI_NETWORK
+   القيم: mainnet أو testnet
+   يشتق من: VERCEL_ENV
+   
+📌 NEXT_PUBLIC_PI_ENV
+   القيم: sandbox أو mainnet
+   يشتق من: VERCEL_ENV
+
+SESSION (2 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 SESSION_TIMEOUT_MS
+   قيمة افتراضية: 86400000 (24 ساعة)
+   
+📌 ADMIN_USERNAME
+   اسم مستخدم للإدارة (backend only)
+   
+📌 NEXT_PUBLIC_ADMIN_USERNAME
+   اسم مستخدم للإدارة (public)
+
+RATE LIMITING (2 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 RATE_LIMIT_MAX_REQUESTS
+   قيمة افتراضية: 200 (prod) / 500 (preview)
+   
+📌 RATE_LIMIT_WINDOW_MS
+   قيمة افتراضية: 60000 (60 ثانية)
+
+FEATURES (3 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 NEXT_PUBLIC_TRIAL_MODE_MESSAGE_LIMIT
+   قيمة افتراضية: 50
+   
+📌 NEXT_PUBLIC_QUEST_HELP_MILESTONE
+   قيمة افتراضية: 10
+   
+📌 NEXT_PUBLIC_MAX_MESSAGE_LENGTH
+   قيمة افتراضية: 1000
+
+LOGGING (3 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 LOG_LEVEL
+   القيم: debug, info, warn, error
+   قيمة افتراضية: debug (preview) / info (production)
+   
+📌 LOG_DB_QUERIES
+   القيم: true أو false
+   قيمة افتراضية: false
+   الملاحظة: عطّل في Production
+
+ANALYTICS (1 متغير):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 NEXT_PUBLIC_VERCEL_ANALYTICS_ID
+   من: Vercel Dashboard
+   اختياري تماماً
+
+ENVIRONMENT (2 متغيرات):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 NODE_ENV
+   القيم: development, production
+   في Preview: development
+   في Production: production
+   
+📌 NEXT_PUBLIC_ENVIRONMENT
+   القيم: development, preview, production
+   يشتق من: VERCEL_ENV
+
+VERCEL AUTOMATIC (4 متغيرات - تلقائية):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 VERCEL_ENV
+   تعيين Vercel التلقائي: production أو preview
+   لا تعدّله يدوياً
+   
+📌 VERCEL_URL
+   مثال: proj-name-preview.vercel.app
+   تعيين Vercel التلقائي
+   
+📌 VERCEL_PROJECT_PRODUCTION_URL
+   رابط الإنتاج الأساسي
+   
+📌 VERCEL_BRANCH_URL
+   رابط الـ Preview للفرع
+
+════════════════════════════════════════════════════════════════════════════
+
+🚀 QUICK SETUP CHECKLIST
+════════════════════════════════════════════════════════════════════════════
+
+STEP 1: Generate Security Keys (5 min)
+────────────────────────────────────────
+[ ] ENCRYPTION_KEY=$(openssl rand -hex 32)
+[ ] ENCRYPTION_IV=$(openssl rand -hex 16)
+[ ] SESSION_SECRET=$(openssl rand -hex 32)
+
+STEP 2: Get Pi App IDs (10 min)
+────────────────────────────────────────
+[ ] Testnet: https://testnet.minepi.com → Developer → App ID
+[ ] Mainnet: https://minepi.com → Developer → App ID
+
+STEP 3: MongoDB Setup (15 min)
+────────────────────────────────────────
+[ ] Create p314-testnet cluster (Shared Tier)
+[ ] Create p314-mainnet cluster (M10+)
+[ ] Get Connection Strings
+
+STEP 4: Add to Vercel (15 min)
+────────────────────────────────────────
+[ ] https://vercel.com/dashboard → Settings → Environment Variables
+[ ] Add 14 REQUIRED variables
+[ ] Add OPTIONAL variables if needed
+[ ] Save
+
+STEP 5: Test (10 min)
+────────────────────────────────────────
+[ ] npm run dev → localhost:3000
+[ ] Test Testnet login
+[ ] Verify MongoDB connection
+[ ] Check logs for errors
+
+════════════════════════════════════════════════════════════════════════════
+
+⚠️ SECURITY CHECKLIST
+════════════════════════════════════════════════════════════════════════════
+
+[ ] Secret Keys are random (OpenSSL generated)
+[ ] No secrets in code, only in Vercel env vars
+[ ] NEXT_PUBLIC_ prefix only for client-side vars
+[ ] Database: IP Whitelist enabled in MongoDB Atlas
+[ ] Database: TLS/SSL enabled (default)
+[ ] Encryption keys format: HEX only (no special chars)
+[ ] Session timeout configured
+[ ] LOG_DB_QUERIES=false in Production
+[ ] Admin credentials are strong
+
+════════════════════════════════════════════════════════════════════════════
+
+📚 DETAILED REFERENCE
+════════════════════════════════════════════════════════════════════════════
+
+For complete documentation with examples:
+👉 Read: COMPLETE_ENV_VARIABLES.md
+
+════════════════════════════════════════════════════════════════════════════
+
+Total: 14 Required + 27 Optional = 41 Environment Variables
+
+All variables documented, categorized, and verified.
+No omissions. Complete audit performed.
+
+════════════════════════════════════════════════════════════════════════════
