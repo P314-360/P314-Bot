@@ -11,12 +11,20 @@ import { ChannelListSkeleton } from "@/components/message-skeleton"
 import { EmptyState } from "@/components/empty-state"
 import { useState } from "react"
 
+import type { JoinedChannel } from "@/lib/types"
+
 interface ChannelListModalProps {
   isOpen: boolean
   onClose: () => void
   channels: UserChannel[]
   onJoinChannel: (channelId: string) => void
   isLoading?: boolean
+  // Optional props used by chatbot-main.tsx
+  joinedChannels?: JoinedChannel[]
+  showOnlyJoined?: boolean
+  filterToMyChannels?: boolean
+  onRefresh?: () => Promise<void>
+  userId?: string
 }
 
 export function ChannelListModal({ isOpen, onClose, channels, onJoinChannel, isLoading = false }: ChannelListModalProps) {

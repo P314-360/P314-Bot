@@ -15,6 +15,11 @@ interface WalletSearchModalProps {
   onClose: () => void
   piAccessToken: string | null
   onReportFraud?: (walletAddress: string) => void
+  // Additional optional props used by various callers
+  userId?: string
+  username?: string
+  prefilledWallet?: string
+  primaryColor?: string
 }
 
 export function WalletSearchModal({ isOpen, onClose, piAccessToken, onReportFraud }: WalletSearchModalProps) {

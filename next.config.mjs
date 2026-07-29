@@ -25,20 +25,29 @@ const nextConfig = {
         : ""),
   },
   async headers() {
+    // Pi Browser runs the app inside a WebView — never set X-Frame-Options.
+    // CSP frame-ancestors controls framing instead.
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.minepi.com https://cdn.jsdelivr.net",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
+      "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
+      "img-src 'self' data: https: blob:",
+      "connect-src 'self' https://api.minepi.com https://*.minepi.com https://*.piappengine.com",
+      "frame-ancestors 'self' https://minepi.com https://*.minepi.com",
+      "form-action 'self'",
+      "base-uri 'self'",
+    ].join("; ")
+
     return [
       {
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
+          { key: "Strict-Transport-Security", value: "max-age=63072000" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+          { key: "Content-Security-Policy", value: csp },
         ],
       },
     ]

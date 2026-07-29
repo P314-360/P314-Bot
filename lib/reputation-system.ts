@@ -20,6 +20,7 @@ export interface ReputationConfig {
   referral_bonus: { points: number; balance: number }
   daily_login: { points: number; balance: number }
   quest_completed: { points: number; balance: number }
+  level_up: { points: number; balance: number }
 }
 
 // Reputation rewards configuration
@@ -31,6 +32,7 @@ export const REPUTATION_REWARDS: ReputationConfig = {
   referral_bonus: { points: 5.0, balance: 1.0 }, // Referral reward
   daily_login: { points: 1.0, balance: 0.0 }, // Daily activity
   quest_completed: { points: 15.0, balance: 2.0 }, // Quest completion
+  level_up: { points: 20.0, balance: 0.0 }, // Level up bonus
 }
 
 // Level thresholds

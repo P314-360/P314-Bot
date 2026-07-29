@@ -12,9 +12,14 @@ import { useLanguage } from "@/hooks/use-language"
 interface CreateChannelModalProps {
   isOpen: boolean
   onClose: () => void
-  onCreateChannel: (name: string, description: string, piUsername: string) => Promise<boolean>
-  isAuthenticated: boolean
-  piUsername: string | null
+  onCreateChannel?: (name: string, description: string, piUsername: string) => Promise<boolean>
+  onChannelCreated?: (name: string, description: string, creatorUsername: string) => Promise<boolean>
+  isAuthenticated?: boolean
+  piUsername?: string | null
+  // Additional optional props used by callers
+  userId?: string
+  username?: string
+  primaryColor?: string
 }
 
 export function CreateChannelModal({

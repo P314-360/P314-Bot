@@ -3,6 +3,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { connectToDatabase, getCollection, getDatabase } from "./mongodb"
+
+// Re-export getCollection so API routes can import it directly from mongodb-server
+export { getCollection }
 import type { ObjectId, Filter, UpdateFilter, Document } from "mongodb"
 
 /**

@@ -1,5 +1,3 @@
-import { LRUCache } from "lru-cache"
-
 interface RateLimitConfig {
   maxRequests: number
   windowMs: number // milliseconds

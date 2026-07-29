@@ -60,15 +60,17 @@ export class ReferralSystem {
           createdAt: new Date().toISOString(),
         }
         await referralCollection.insertOne(referralDoc)
-        referral = referralDoc
+        referral = await referralCollection.findOne({ referrerId: userId })
       }
 
+      if (!referral) return null
+
       return {
-        referralCode: referral.referralCode,
-        referralUrl: referral.referralUrl,
-        totalReferrals: referral.totalReferrals || 0,
-        activatedReferrals: referral.activatedReferrals || 0,
-        totalEarnings: referral.totalEarnings || 0,
+        referralCode: referral.referralCode as string,
+        referralUrl: referral.referralUrl as string,
+        totalReferrals: (referral.totalReferrals as number) || 0,
+        activatedReferrals: (referral.activatedReferrals as number) || 0,
+        totalEarnings: (referral.totalEarnings as number) || 0,
       }
     } catch (error) {
       console.error("Error getting referral link:", error)

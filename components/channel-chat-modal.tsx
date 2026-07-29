@@ -21,8 +21,9 @@ interface ChannelChatModalProps {
   channel: UserChannel
   userId: string
   username: string
-  piAccessToken: string | null
+  piAccessToken?: string | null
   onNewMessage?: (channelId: string, channelName: string, message: string, senderUsername: string) => void
+  primaryColor?: string
 }
 
 export function ChannelChatModal({

@@ -10,7 +10,8 @@ import { useLanguage } from "@/hooks/use-language"
 interface ModeratorServersModalProps {
   isOpen: boolean
   onClose: () => void
-  piAccessToken: string | null
+  piAccessToken?: string | null
+  primaryColor?: string
 }
 
 export function ModeratorServersModal({ isOpen, onClose, piAccessToken }: ModeratorServersModalProps) {

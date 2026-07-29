@@ -19,8 +19,6 @@ interface FraudWallet {
   reportCount: number
 }
 
-const FraudWalletsPanelProps = { language: "en" | "ar" }
-
 export function FraudWalletsPanel({ language }: FraudWalletsPanelProps) {
   const isRTL = language === "ar"
   const [searchQuery, setSearchQuery] = useState("")

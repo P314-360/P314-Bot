@@ -156,6 +156,6 @@ export async function searchPiBlockchain(
     balance: "0.00", // Would be from blockchain API
     verified: verification.isValid && !verification.isFlagged,
     fraudReports: verification.flagReason ? 1 : 0,
-    status: verification.riskScore > 50 ? "flagged" : verification.riskScore > 20 ? "suspicious" : "clean",
+    status: (verification.riskScore ?? 0) > 50 ? "flagged" : (verification.riskScore ?? 0) > 20 ? "suspicious" : "clean",
   }
 }

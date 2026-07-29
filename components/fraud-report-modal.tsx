@@ -20,6 +20,9 @@ interface FraudReportModalProps {
   piAccessToken: string | null
   prefilledWallet?: string
   onReportSubmitted?: () => void
+  // Additional optional props used by various callers
+  onWalletVerify?: (wallet: string) => void
+  primaryColor?: string
 }
 
 export function FraudReportModal({

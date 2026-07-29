@@ -4,24 +4,30 @@
  */
 
 export const securityHeaders = {
-  // Prevent clickjacking
-  "X-Frame-Options": "DENY",
+  // NOTE: X-Frame-Options is intentionally OMITTED.
+  // Pi Browser runs the app inside a WebView (iframe). Setting DENY or SAMEORIGIN
+  // would block the app from loading inside Pi Browser entirely.
+  // Framing is controlled exclusively via CSP frame-ancestors below.
 
   // Prevent MIME type sniffing
   "X-Content-Type-Options": "nosniff",
 
-  // Enable XSS protection (legacy, but still useful)
+  // Enable XSS protection (legacy browsers)
   "X-XSS-Protection": "1; mode=block",
 
-  // Content Security Policy
+  // Content Security Policy — Pi Browser compatible
+  // - frame-ancestors allows minepi.com WebView to embed this app
+  // - script-src includes sdk.minepi.com (official Pi SDK CDN)
+  // - connect-src includes *.piappengine.com (Pi auth backend) and *.minepi.com
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://sdk.pi-sdk.net",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.minepi.com https://cdn.jsdelivr.net",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
     "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
     "img-src 'self' data: https: blob:",
-    "connect-src 'self' https://api.pi-sdk.net https://testnet-api.pi-sdk.net https://api.minepi.com",
-    "frame-ancestors 'none'",
+    "connect-src 'self' https://api.minepi.com https://*.minepi.com https://*.piappengine.com",
+    // Allow Pi Browser (minepi.com) to embed this app in its WebView
+    "frame-ancestors 'self' https://minepi.com https://*.minepi.com",
     "form-action 'self'",
     "base-uri 'self'",
   ].join("; "),
@@ -29,7 +35,7 @@ export const securityHeaders = {
   // Referrer Policy
   "Referrer-Policy": "strict-origin-when-cross-origin",
 
-  // Permissions Policy (formerly Feature Policy)
+  // Permissions Policy
   "Permissions-Policy": [
     "accelerometer=()",
     "camera=()",
@@ -41,8 +47,8 @@ export const securityHeaders = {
     "usb=()",
   ].join(", "),
 
-  // HSTS (HTTP Strict Transport Security)
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  // HSTS — only for production HTTPS deployments
+  "Strict-Transport-Security": "max-age=63072000",
 }
 
 /**

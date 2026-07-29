@@ -30,4 +30,5 @@ export const BACKEND_CONFIG = {
 export const BACKEND_URLS = {
   LOGIN: `${BACKEND_CONFIG.BASE_URL}/v1/login`,
   CHAT: `${BACKEND_CONFIG.BASE_URL}/v1/chat/default`,
+  ANALYZE_CONFIDENCE: `${BACKEND_CONFIG.BASE_URL}/v1/source-confidence/analyze`,
 } as const

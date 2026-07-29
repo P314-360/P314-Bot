@@ -1,26 +1,26 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { getCollection } from "@/lib/mongodb-server"
 
-// In-memory store - replace with MongoDB collection in production
-const adSettingsStore = new Map()
+const DEFAULT_AD_SETTINGS = (userId: string) => ({
+  userId,
+  adsEnabled: false,
+  earnedRevenue: 0,
+  revenueSharePercentage: 5,
+  features: [] as string[],
+  lastUpdated: new Date(),
+})
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const userId = searchParams.get("userId")
-
+    const userId = request.nextUrl.searchParams.get("userId")
     if (!userId) {
       return NextResponse.json({ error: "User ID required" }, { status: 400 })
     }
 
-    const settings = adSettingsStore.get(userId) || {
-      userId,
-      adsEnabled: false,
-      earnedRevenue: 0,
-      revenueSharePercentage: 5,
-      features: [],
-      lastUpdated: new Date(),
-    }
+    const col = await getCollection("userSettings")
+    const existing = await col.findOne({ userId, settingType: "adSettings" })
 
+    const settings = existing ?? DEFAULT_AD_SETTINGS(userId)
     return NextResponse.json({ settings })
   } catch (error) {
     console.error("Error fetching ad settings:", error)
@@ -37,23 +37,25 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "User ID required" }, { status: 400 })
     }
 
-    const currentSettings = adSettingsStore.get(userId) || {
-      userId,
-      adsEnabled: false,
-      earnedRevenue: 0,
-      revenueSharePercentage: 5,
-      features: [],
-      lastUpdated: new Date(),
-    }
+    const col = await getCollection("userSettings")
+    const existing = await col.findOne({ userId, settingType: "adSettings" })
 
+    const base = existing ?? DEFAULT_AD_SETTINGS(userId)
     const updatedSettings = {
-      ...currentSettings,
+      ...base,
+      settingType: "adSettings",
       adsEnabled,
-      features: adsEnabled ? ["Unlimited messages", "Priority response", "Early access to new features"] : [],
+      features: adsEnabled
+        ? ["Unlimited messages", "Priority response", "Early access to new features"]
+        : [],
       lastUpdated: new Date(),
     }
 
-    adSettingsStore.set(userId, updatedSettings)
+    await col.updateOne(
+      { userId, settingType: "adSettings" },
+      { $set: updatedSettings },
+      { upsert: true }
+    )
 
     return NextResponse.json({ success: true, settings: updatedSettings })
   } catch (error) {

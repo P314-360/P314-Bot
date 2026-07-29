@@ -16,10 +16,12 @@ export interface PiUser {
   kycVerified?: boolean
 }
 
+import type { SupportedLanguage } from "./translations"
+
 export interface UserSettings {
   theme: "light" | "dark"
   securityAlerts: boolean
-  language: "en" | "ar"
+  language: SupportedLanguage
   voiceSettings?: VoiceSettings
 }
 

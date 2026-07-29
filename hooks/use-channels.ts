@@ -41,16 +41,21 @@ export function useChannels(piUsername: string | null) {
       })
 
       const transformedChannels: UserChannel[] = (response || []).map((channel) => ({
-        id: channel._id,
-        name: channel.name,
-        description: channel.description,
-        ownerUsername: channel.ownerUsername,
-        ownerPiUid: channel.ownerPiUid,
-        subscribers: channel.subscribers || 0,
-        isVerified: channel.isVerified,
-        aiModerated: channel.aiModerated || true,
-        createdAt: new Date(channel.createdAt).getTime(),
-        reputationScore: channel.reputationScore || 0,
+        channelId: channel._id ?? channel.channelId,
+        ownerId: channel.ownerPiUid ?? channel.ownerId ?? "",
+        ownerUsername: channel.ownerUsername ?? "",
+        channelName: channel.name ?? channel.channelName ?? "",
+        description: channel.description ?? "",
+        isVerified: channel.isVerified ?? false,
+        subscribers: channel.subscribers ?? 0,
+        createdAt: channel.createdAt ? new Date(channel.createdAt) : new Date(),
+        isActive: channel.isActive ?? true,
+        moderatedByAI: channel.aiModerated ?? channel.moderatedByAI ?? true,
+        helpStats: channel.helpStats ?? {
+          totalHelps: 0,
+          successRate: 0,
+          averageRating: 0,
+        },
       }))
 
       setChannels(transformedChannels)

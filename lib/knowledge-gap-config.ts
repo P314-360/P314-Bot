@@ -21,5 +21,7 @@ export const generateMockKnowledgeGap = (question: string) => {
       `What is ${randomCategory.toLowerCase()}?`,
       `When will ${randomCategory.toLowerCase()} be available?`,
     ],
+    // Required by KnowledgeGapData interface — mirrors popularityScore in mock mode
+    community_awareness_score: randomPopularity,
   }
 }

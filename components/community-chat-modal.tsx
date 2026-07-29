@@ -16,6 +16,7 @@ interface CommunityChatModalProps {
   userId: string
   username: string
   piAccessToken: string | null
+  primaryColor?: string
 }
 
 export function CommunityChatModal({ isOpen, onClose, userId, username, piAccessToken }: CommunityChatModalProps) {

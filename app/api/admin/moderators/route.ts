@@ -1,11 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { getCollection } from "@/lib/mongodb-server"
 
-// In-memory store - replace with MongoDB collection in production
-const moderatorsStore = new Map()
-
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const moderators = Array.from(moderatorsStore.values())
+    const col = await getCollection("moderators")
+    const moderators = await col.find({}).sort({ addedAt: -1 }).toArray()
     return NextResponse.json({ moderators })
   } catch (error) {
     console.error("Error fetching moderators:", error)
@@ -18,19 +17,25 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { piUsername, permissions, specialization, language } = body
 
+    if (!piUsername) {
+      return NextResponse.json({ error: "piUsername is required" }, { status: 400 })
+    }
+
+    const col = await getCollection("moderators")
+
     const moderatorId = `mod_${Date.now()}`
     const newModerator = {
       moderatorId,
       piUsername,
       addedBy: "Axis2030",
       addedAt: new Date(),
-      permissions,
+      permissions: permissions ?? [],
       isActive: true,
-      specialization,
-      language,
+      specialization: specialization ?? "",
+      language: language ?? "en",
     }
 
-    moderatorsStore.set(moderatorId, newModerator)
+    await col.insertOne(newModerator)
 
     return NextResponse.json({ success: true, moderator: newModerator })
   } catch (error) {

@@ -10,6 +10,9 @@ import type { UserSettings } from "@/lib/types"
 interface SettingsPanelProps {
   settings: UserSettings
   onUpdateSettings: (settings: Partial<UserSettings>) => void
+  // Additional optional props used by dashboard
+  userId?: string
+  piAccessToken?: string | null
 }
 
 export function SettingsPanel({ settings, onUpdateSettings }: SettingsPanelProps) {

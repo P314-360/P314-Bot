@@ -14,7 +14,8 @@ interface E2EECommunityChatModalProps {
   onClose: () => void
   userId: string
   username: string
-  piAccessToken: string | null
+  piAccessToken?: string | null
+  primaryColor?: string
 }
 
 export function E2EECommunityChatModal({

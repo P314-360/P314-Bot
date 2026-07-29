@@ -67,7 +67,10 @@ export async function getDatabase(): Promise<Db> {
 /**
  * Get specific collection with type safety
  */
-export async function getCollection<T = any>(collectionName: string): Promise<Collection<T>> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getCollection<T extends Record<string, any> = Record<string, any>>(
+  collectionName: string,
+): Promise<Collection<T>> {
   const db = await getDatabase()
   return db.collection<T>(collectionName)
 }

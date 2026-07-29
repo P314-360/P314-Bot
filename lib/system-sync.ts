@@ -1,19 +1,17 @@
-import { query, isDatabaseConfigured } from "./db"
+import { getCollection } from "./mongodb-server"
 import type { SupportedLanguage } from "./translations"
 
-// Sync user activity to database
-export async function syncUserActivity(userId: string, activityType: string, metadata?: any) {
-  if (!isDatabaseConfigured()) {
-    console.warn("[System Sync] Database not configured, skipping sync")
-    return false
-  }
-
+// Sync user activity to MongoDB
+export async function syncUserActivity(userId: string, activityType: string, metadata?: Record<string, unknown>) {
   try {
-    await query(
-      `INSERT INTO reputation_activities (user_id, activity_type, points_change, description)
-       VALUES ($1, $2, $3, $4)`,
-      [userId, activityType, metadata?.points || 0, JSON.stringify(metadata)],
-    )
+    const col = await getCollection("userActivityLog")
+    await col.insertOne({
+      userId,
+      activityType,
+      points: metadata?.points ?? 0,
+      metadata: metadata ?? {},
+      createdAt: new Date(),
+    })
     return true
   } catch (error) {
     console.error("[System Sync] Failed to sync user activity:", error)
@@ -21,14 +19,15 @@ export async function syncUserActivity(userId: string, activityType: string, met
   }
 }
 
-// Update user language preference in database
+// Update user language preference in MongoDB
 export async function syncLanguagePreference(userId: string, language: SupportedLanguage) {
-  if (!isDatabaseConfigured()) {
-    return false
-  }
-
   try {
-    await query(`UPDATE user_settings SET language = $1, updated_at = NOW() WHERE user_id = $2`, [language, userId])
+    const col = await getCollection("userSettings")
+    await col.updateOne(
+      { userId },
+      { $set: { language, updatedAt: new Date() } },
+      { upsert: true },
+    )
     return true
   } catch (error) {
     console.error("[System Sync] Failed to sync language:", error)
@@ -38,19 +37,20 @@ export async function syncLanguagePreference(userId: string, language: Supported
 
 // Get user profile with all stats
 export async function getUserProfile(userId: string) {
-  if (!isDatabaseConfigured()) {
-    return null
-  }
-
   try {
-    const result = await query(
-      `SELECT u.*, us.language, us.theme
-       FROM users u
-       LEFT JOIN user_settings us ON us.user_id = u.id
-       WHERE u.id = $1`,
-      [userId],
-    )
-    return result.rows[0] || null
+    const users = await getCollection("users")
+    const settings = await getCollection("userSettings")
+
+    const user = await users.findOne({ piUid: userId })
+    if (!user) return null
+
+    const userSettings = await settings.findOne({ userId })
+
+    return {
+      ...user,
+      language: userSettings?.language ?? "en",
+      theme: userSettings?.theme ?? "dark",
+    }
   } catch (error) {
     console.error("[System Sync] Failed to get user profile:", error)
     return null
@@ -59,13 +59,14 @@ export async function getUserProfile(userId: string) {
 
 // Sync referral activity
 export async function syncReferralActivity(referredUserId: string, activityType: string, amount: number) {
-  if (!isDatabaseConfigured()) {
-    return false
-  }
-
   try {
-    // Call the pay_referral_commission function
-    await query(`SELECT pay_referral_commission($1, $2, $3)`, [referredUserId, activityType, amount])
+    const col = await getCollection("referralCommissions")
+    await col.insertOne({
+      sourceUserId: referredUserId,
+      activityType,
+      amount,
+      createdAt: new Date(),
+    })
     return true
   } catch (error) {
     console.error("[System Sync] Failed to sync referral:", error)

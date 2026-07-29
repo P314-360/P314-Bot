@@ -89,7 +89,13 @@ export function usePiSession() {
       // Dynamically load Pi SDK
       const loadPiSDK = (): Promise<void> => {
         return new Promise((resolve, reject) => {
-          if (document.querySelector('script[src*="pi-sdk"]')) {
+          // If Pi SDK is already loaded (running inside Pi Browser) resolve immediately
+          if (typeof window.Pi !== "undefined") {
+            resolve()
+            return
+          }
+          // Avoid injecting duplicate script tags
+          if (document.querySelector('script[src="https://sdk.minepi.com/pi-sdk.js"]')) {
             resolve()
             return
           }
@@ -98,7 +104,7 @@ export function usePiSession() {
           script.src = "https://sdk.minepi.com/pi-sdk.js"
           script.async = true
           script.onload = () => resolve()
-          script.onerror = () => reject(new Error("Failed to load Pi SDK"))
+          script.onerror = () => reject(new Error("Failed to load Pi SDK from sdk.minepi.com"))
           document.head.appendChild(script)
         })
       }
@@ -110,13 +116,21 @@ export function usePiSession() {
       }
 
       setAuthMessage("Initializing Pi Network...")
-      await window.Pi.init({ version: "2.0", sandbox: false })
+      // sandbox must be true in Preview (testnet) and false only in Production (mainnet).
+      // NEXT_PUBLIC_PI_ENV is derived from VERCEL_ENV in pi-environment-config.ts.
+      const isSandbox = process.env.NEXT_PUBLIC_PI_ENV !== "mainnet"
+      await window.Pi.init({ version: "2.0", sandbox: isSandbox })
 
       setAuthMessage("Authenticating with Pi Network...")
-      const piAuthResult = await window.Pi.authenticate(["username", "roles"])
+      // Pi SDK v2 only supports the "username" scope for basic auth.
+      // "roles" is not a valid scope and causes authentication to fail.
+      const piAuthResult = await window.Pi.authenticate(["username"])
 
       setAuthMessage("Logging in to backend...")
-      const loginRes = await fetch("https://backend.appstudio-u7cm9zhmha0ruwv8.piappengine.com/v1/login", {
+      // Use the app's own API route — avoids hardcoding the piappengine domain
+      // and keeps the backend URL configurable via NEXT_PUBLIC_BACKEND_URL env var.
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_SANDBOX || ""
+      const loginRes = await fetch(`${backendUrl}/v1/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pi_auth_token: piAuthResult.accessToken }),
