@@ -16,7 +16,7 @@ export function getEnv() {
   const env = {
     // Database
     mongodbUri: process.env.MONGODB_URI,
-    mongodbDbName: process.env.MONGODB_DB_NAME || "p314_bot",
+    mongodbDbName: process.env.MONGODB_DB_NAME,
 
     // Pi Network
     piAppId: process.env.PI_APP_ID,
@@ -39,8 +39,8 @@ export function getEnv() {
     sessionSecret: process.env.SESSION_SECRET,
     sessionTimeoutMs: parseInt(process.env.SESSION_TIMEOUT_MS || "86400000"),
 
-    // API - More lenient for Preview (testing), stricter for Production
-    apiUrl: process.env.NEXT_PUBLIC_API_URL || (isVercelPreview ? "https://p314-bot-1-staging.vercel.app" : "https://p314-bot-1.vercel.app"),
+    // API - Must be explicitly set in Vercel environment variables
+    apiUrl: process.env.NEXT_PUBLIC_API_URL || "",
     rateLimitMaxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || (isVercelPreview ? "500" : "200")),
     rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "60000"),
 
@@ -74,12 +74,14 @@ export function getEnv() {
   if (!isDevelopment && !isBuildTime) {
     const requiredEnvVars: Array<keyof typeof env> = [
       "mongodbUri",
+      "mongodbDbName",
       "piAppId",
       "piApiKey",
       "sessionSecret",
       "encryptionKey",
       "encryptionIv",
-      "adminUsername", // Admin user must be explicitly set
+      "adminUsername",
+      "apiUrl",
     ]
     requiredEnvVars.forEach((varName) => {
       if (!env[varName]) {

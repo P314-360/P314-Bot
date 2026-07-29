@@ -44,7 +44,12 @@ export async function postToApi<T = any>(endpoint: string, data: any): Promise<T
  * GET request to API
  */
 export async function getFromApi<T = any>(endpoint: string, params?: Record<string, any>): Promise<T> {
-  const url = new URL(endpoint, typeof window !== "undefined" ? window.location.origin : "http://localhost:3000")
+  const baseUrl = typeof window !== "undefined"
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_API_URL || process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : ""
+  const url = new URL(endpoint, baseUrl)
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
