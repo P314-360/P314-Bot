@@ -30,6 +30,7 @@ import { BotRating } from "@/components/bot-rating"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { Message, UserChannel } from "@/lib/types"
+import type { PiEnvironment } from "@/lib/pi-environment-config"
 import { CommunityChatModal } from "@/components/community-chat-modal"
 import { E2EECommunityChatModal } from "@/components/e2ee-community-chat-modal"
 import { FraudReportModal } from "@/components/fraud-report-modal"
@@ -49,14 +50,17 @@ import { ChannelChatModal } from "@/components/channel-chat-modal"
 import { usePiSession } from "@/hooks/use-pi-session"
 import { LoginPage } from "@/components/login-page"
 import { useEffect } from "react"
-import { ChannelListModal } from "@/components/channel-list-modal" // Import ChannelListModal
-import { BugBountyModal } from "@/components/bug-bounty-modal" // Import BugBountyModal
+import { ChannelListModal } from "@/components/channel-list-modal"
+import { BugBountyModal } from "@/components/bug-bounty-modal"
 import { useGuestMode } from "@/hooks/use-guest-mode"
 import { GuestModeBanner } from "@/components/guest-mode-banner"
+import { EnvironmentSelector } from "@/components/environment-selector"
 
 export default function ChatBot() {
   const router = useRouter()
   const [isGuestMode, setIsGuestMode] = useState(false)
+  const [selectedEnvironment, setSelectedEnvironment] = useState<PiEnvironment | null>(null)
+  const [isEnvironmentSelected, setIsEnvironmentSelected] = useState(false)
   
   const {
     isSessionValid,
@@ -75,6 +79,29 @@ export default function ChatBot() {
   const userId = isGuestMode ? guestModeHook.userId : (sessionData?.userId || "guest")
   const username = isGuestMode ? guestModeHook.username : (sessionData?.username || "Pioneer")
   const piAccessToken = isGuestMode ? null : (sessionData?.piAccessToken || null)
+
+  const handleEnvironmentSelect = (env: PiEnvironment) => {
+    setSelectedEnvironment(env)
+    // Store selected environment in localStorage for persistence
+    if (typeof window !== "undefined") {
+      localStorage.setItem("pi_selected_environment", env)
+    }
+    // Small delay to show selection feedback
+    setTimeout(() => {
+      setIsEnvironmentSelected(true)
+    }, 500)
+  }
+
+  // Initialize environment on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedEnv = localStorage.getItem("pi_selected_environment") as PiEnvironment | null
+      if (storedEnv) {
+        setSelectedEnvironment(storedEnv)
+        setIsEnvironmentSelected(true)
+      }
+    }
+  }, [])
 
   const { bottomRef } = useScrollToBottom([])
   const { language, changeLanguage, t, isRTL } = useLanguage()
@@ -224,6 +251,16 @@ export default function ChatBot() {
           <p className="text-gray-600">Checking session...</p>
         </div>
       </div>
+    )
+  }
+
+  // Show environment selector if not yet selected
+  if (!isEnvironmentSelected) {
+    return (
+      <EnvironmentSelector
+        onEnvironmentSelect={handleEnvironmentSelect}
+        isLoading={false}
+      />
     )
   }
 
