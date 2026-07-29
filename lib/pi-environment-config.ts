@@ -14,17 +14,26 @@ export interface PiEnvironmentConfig {
   description: string
 }
 
-// Get environment from environment variable or default to sandbox
+/**
+ * Resolve the Pi environment without any hardcoded fallback.
+ *
+ * Priority:
+ *  1. NEXT_PUBLIC_PI_ENV — explicit override set in Vercel env vars
+ *  2. VERCEL_ENV === "production"  → mainnet
+ *  3. VERCEL_ENV === "preview"     → sandbox (testnet)
+ *  4. No VERCEL_ENV at all         → sandbox (build-time / local tooling only)
+ *
+ * Because VERCEL_ENV is only set on Vercel, the function never returns "mainnet"
+ * unless you are actually running a Production deployment — safe by default.
+ */
 const getEnvironment = (): PiEnvironment => {
-  if (typeof window === "undefined") {
-    // Server-side
-    const env = process.env.NEXT_PUBLIC_PI_ENV as PiEnvironment | undefined
-    return env || "sandbox"
-  }
+  // Explicit override always wins
+  const explicit = process.env.NEXT_PUBLIC_PI_ENV as PiEnvironment | undefined
+  if (explicit === "mainnet" || explicit === "sandbox") return explicit
 
-  // Client-side
-  const env = process.env.NEXT_PUBLIC_PI_ENV as PiEnvironment | undefined
-  return env || "sandbox"
+  // Derive from Vercel's built-in deployment environment variable
+  const vercelEnv = process.env.VERCEL_ENV // "production" | "preview" | undefined
+  return vercelEnv === "production" ? "mainnet" : "sandbox"
 }
 
 // Environment-specific configurations

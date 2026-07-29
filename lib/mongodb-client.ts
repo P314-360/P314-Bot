@@ -41,25 +41,32 @@ export async function postToApi<T = any>(endpoint: string, data: any): Promise<T
 }
 
 /**
- * GET request to API
+ * GET request to API.
+ * Accepts relative paths (e.g. "/api/chat") from the browser — Next.js resolves them
+ * against the current origin automatically. On the server we build the absolute URL
+ * from NEXT_PUBLIC_APP_URL which is auto-injected by next.config.mjs from VERCEL_URL.
  */
 export async function getFromApi<T = any>(endpoint: string, params?: Record<string, any>): Promise<T> {
-  const baseUrl = typeof window !== "undefined"
-    ? window.location.origin
-    : process.env.NEXT_PUBLIC_API_URL || process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : ""
-  const url = new URL(endpoint, baseUrl)
+  // On the client, window.location.origin is always correct — no hardcoded domain needed.
+  // On the server, NEXT_PUBLIC_APP_URL is injected by next.config.mjs from Vercel env vars.
+  const baseUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_APP_URL || ""
+
+  // If no baseUrl is available (e.g. during local dev without the var set) and the
+  // endpoint is already absolute, use it directly.
+  const resolvedUrl = baseUrl ? new URL(endpoint, baseUrl) : new URL(endpoint)
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        url.searchParams.append(key, String(value))
+        resolvedUrl.searchParams.append(key, String(value))
       }
     })
   }
 
-  return fetchFromApi<T>(url.toString(), {
+  return fetchFromApi<T>(resolvedUrl.toString(), {
     method: "GET",
   })
 }
